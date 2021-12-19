@@ -1,9 +1,72 @@
+import { useState } from 'react';
+import axios from 'axios';
+import {validate} from './validate';
 import './App.css';
 
 function Form() {
 
+  const [input, setInput] = useState({
+    usuario:'',
+    nombre:'',
+    cargo:'',
+    teléfono:'',
+    correo:'',
+    número:'',
+    tipo_contacto:'',
+    autorizado:[]
+  });
+console.log(input)
+  const [ errors, setErrors ] = useState({});
 
+  function handleInput(e) {
+    setInput({
+      ...input,
+      [e.target.name]: e.target.value,
+    });
+    setErrors(
+      validate({
+        ...input,
+        [e.target.name]: e.target.value,
+      })
+    );
+  }
   
+  function handleCheckBox(e) {
+    if (e.target.checked) {
+      setInput({
+        ...input,
+        autorizado: [...input.autorizado, e.target.value],
+      });
+    } else {
+      setInput({
+        ...input,
+        autorizado: input.autorizado.filter(
+          (autorizado) => autorizado !== e.target.value
+        ),
+      });
+  }
+}
+
+async function handleSubmit(e){
+  e.preventDefault();
+  try {
+    const contraseña = await axios.post('http://localhost3001/form', input);
+    alert(`su contraseña es ${contraseña}`);
+    console.log(input)
+    setInput({
+      usuario:'',
+      nombre:'',
+      cargo:'',
+      teléfono:'',
+      correo:'',
+      número:'',
+      tipo_contacto:'',
+      autorizado:[]
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
   return (
     <div className="App">
       <div>  
@@ -11,35 +74,66 @@ function Form() {
           <h5>x</h5>
       </div>
         <form>
+        <div>
           <label>Código de cliente: </label>
             <input type='text' disabled={true} defaultValue = 'xmxwebdemo2' />
+        </div>
+        <div>
           <label>Usuario: *</label>
-            <input type='text' />
+            <input type='text' value={input.usuario} name='usuario' onChange={handleInput}/>
+            {errors.usuario && <p >{errors.usuario}</p>}
+        </div>
+        <div>
           <label>Nombre: *</label>
-            <input type='text' />
-          <label>Cargo: *</label>
-            <input type='text' />
-          <label>Teléfono: *</label>
-            <input type='text' />
-          <label>Correro electrónico: *</label>
-            <input type='email' />
-          <label>Número de celular: *</label>
-            <input type='text' />
-          <label>Tipo de contacto: *</label>
-            <select>
-              <option>Contacto Comercial</option>
-              <option>Pago de factura</option>
-              <option>Representante legal</option>
-              <option>Retiro de mercadería</option>
-            </select>
+            <input type='text' value={input.nombre} name='nombre' onChange={handleInput} placeholder='Nombre' />
+            {errors.nombre && <p >{errors.nombre}</p>}
+        </div>
+        <div>
+            <label>Cargo: *</label>
+              <input type='text' value={input.cargo} name='cargo' onChange={handleInput} placeholder='Cargo'/>
+              {errors.cargo && <p >{errors.cargo}</p>}
+
+          </div>
+          <div>
+            <label>Teléfono: *</label>
+              <input type='text' value={input.teléfono} name='teléfono' onChange={handleInput} placeholder='+57'/>
+              {errors.teléfono && <p >{errors.teléfono}</p>}
+          </div>
+          <div>
+            <label>Correro electrónico: *</label>
+              <input type='email' value={input.correo} name='correo' onChange={handleInput} placeholder='Correro electrónico'/>
+              {errors.correo && <p >{errors.correo}</p>}
+          </div>
+          <div>
+            <label>Número de celular: *</label>
+              <input type='text' value={input.número} name='número' onChange={handleInput} placeholder='Número de celular'/>
+              {errors.número && <p >{errors.número}</p>}
+          </div>
+          <div>
+            <label>Tipo de contacto: *</label>
+              <select name='tipo_contacto' onChange={handleInput}>
+                <option value='Contacto Comercial' >Contacto Comercial</option>
+                <option value='Pago de factura'>Pago de factura</option>
+                <option value='Representante legal'>Representante legal</option>
+                <option value='Retiro de mercadería'>Retiro de mercadería</option>
+              </select>
+              {errors.contacto && <p >{errors.contacto}</p>}
+          </div>
+          <div>
           <label>Autorizado para acceder a WebStore</label>
-            <input type='checkbox'/>
+            <input type='checkbox' value='Autorizado para acceder a WebStore' name='autorizado' onChange={handleCheckBox}/>
+            <br/>
             <label>Autorizado para crear ordenes</label>
-            <input type='checkbox'/>
+            <input type='checkbox' value='Autorizado para crear ordenes' name='autorizado' onChange={handleCheckBox}/>
+            <br/>
             <label>¿Desea que se envíe la información de acceso al usuario?</label>
-            <input type='checkbox'/>
-          <button type='submit'>Aceptar</button>
-          <button >Cancelar</button>
+            <input type='checkbox' value='¿Desea que se envíe la información de acceso al usuario?' name='autorizado' onChange={handleCheckBox}/>
+          </div>
+          <div>
+            <button type='submit' onClick={handleSubmit}>Aceptar</button>
+            <button >Cancelar</button>
+          </div>
+
         </form>
     </div>
   );
