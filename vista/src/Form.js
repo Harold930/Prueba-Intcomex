@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import {validate} from './validate';
+import validate from './validate';
 import './App.css';
 
 function Form() {
@@ -9,15 +9,14 @@ function Form() {
     usuario:'',
     nombre:'',
     cargo:'',
-    teléfono:'',
+    telefono:'',
     correo:'',
-    número:'',
+    numero:'',
     tipo_contacto:'',
     autorizado:[]
   });
 console.log(input)
   const [ errors, setErrors ] = useState({});
-
   function handleInput(e) {
     setInput({
       ...input,
@@ -49,23 +48,25 @@ console.log(input)
 
 async function handleSubmit(e){
   e.preventDefault();
+  let form = { ...input, telefono: `+57${input.telefono}`}
   try {
-    const contraseña = await axios.post('http://localhost3001/form', input);
-    alert(`su contraseña es ${contraseña}`);
+     const contraseña = await axios.post('http://localhost:3001/form',form);
+     console.log(contraseña)
+    alert(`su contraseña es ${contraseña.data}`);
     console.log(input)
     setInput({
       usuario:'',
       nombre:'',
       cargo:'',
-      teléfono:'',
+      telefono:'',
       correo:'',
-      número:'',
+      numero:'',
       tipo_contacto:'',
       autorizado:[]
     });
   } catch (error) {
     console.log(error);
-  }
+}
 }
   return (
     <div className="App">
@@ -96,8 +97,8 @@ async function handleSubmit(e){
           </div>
           <div>
             <label>Teléfono: *</label>
-              <input type='text' value={input.teléfono} name='teléfono' onChange={handleInput} placeholder='+57'/>
-              {errors.teléfono && <p >{errors.teléfono}</p>}
+              <input type='text' value={input.telefono} name='telefono' onChange={handleInput} placeholder='+57'/>
+              {errors.telefono && <p >{errors.telefono}</p>}
           </div>
           <div>
             <label>Correro electrónico: *</label>
@@ -106,8 +107,7 @@ async function handleSubmit(e){
           </div>
           <div>
             <label>Número de celular: *</label>
-              <input type='text' value={input.número} name='número' onChange={handleInput} placeholder='Número de celular'/>
-              {errors.número && <p >{errors.número}</p>}
+              <input type='text' value={input.numero} name='numero' onChange={handleInput} placeholder='Número de celular'/>
           </div>
           <div>
             <label>Tipo de contacto: *</label>

@@ -1,6 +1,9 @@
-export default function validate(input){
+ 
+ 
+ 
+ function validate(input){
     let errors = {};
-
+    console.log(input, '<<<<<<<<-------------soy el input de controlador')
     if(input.usuario.length !== 6){
         errors.usuario = 'Longitud de seis carácteres';
         console.log(input.usuario.slice(0,3))
@@ -16,7 +19,7 @@ export default function validate(input){
         errors.cargo = 'Longitud mínima de 5 carácteres y máxim de 10';
     }
 
-    if(input.telefono.length !==  7){
+    if(input.telefono.length !==  10){
         errors.telefono = 'Longitud de 7 carácteres ';
     }
 
@@ -28,3 +31,4 @@ export default function validate(input){
     return errors;
 }
 
+module.exports = validate;
